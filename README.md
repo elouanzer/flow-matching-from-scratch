@@ -18,7 +18,7 @@ However, the target vector field $u_t(x)$ and $p_t(x)$ are not known for the ent
 
 $$\mathcal{L}_{\text{CFM}}(\theta) = \mathbb{E}_{t \sim U[0,1], \, x_1 \sim p_{\text{data}}, \, x \sim p_t(x|x_1)} \left[ \| v_t(x; \theta) - u_t(x|x_1) \|^2 \right]$$
 
-Unlike $\mathcal{L}_{\mathrm{FM}}$, which requires knowing the global, aggregate vector field $u_t(x)$, $\mathcal{L}_{\mathrm{CFM}}$ regresses against simpler, closed-form conditional vector fields $u_t(x|x_1)$ operating on local data paths. The paper proves that:
+Unlike $\mathcal{L}_ {\mathrm{FM}}$, which requires knowing the global, aggregate vector field $u_ t(x)$, $\mathcal{L}_{\mathrm{CFM}}$ regresses against simpler, closed-form conditional vector fields $u_t(x|x_1)$ operating on local data paths. The paper proves that:
 
 $$\nabla_{\theta} \mathcal{L}_{\mathrm{FM}}(\theta) = \nabla_{\theta} \mathcal{L}_{\mathrm{CFM}}(\theta)$$
 
