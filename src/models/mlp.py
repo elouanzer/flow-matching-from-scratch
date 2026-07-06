@@ -8,7 +8,7 @@ import torch.nn as nn
 from src.models.layers import SinusoidalTimeEmbedding
 
 class FlowMatchingMLP(nn.Module):
-    def __init__(self, input_channels=1, image_size=28, time_emb_dim=128, hidden_dim=512, hidden_layers=3):
+    def __init__(self, input_channels=1, image_size=28, time_emb_dim=256, hidden_dim=1024, hidden_layers=3):
         """
         A robust MLP adapted for MNIST images
         """
