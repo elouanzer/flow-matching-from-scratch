@@ -1,5 +1,7 @@
 # for this project
 data/MNIST/raw
+notebooks/data/
+checkpoints/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

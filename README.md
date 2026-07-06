@@ -40,15 +40,12 @@ This corresponds to a Gaussian conditional probability path where:
 
 Plugging these exact derivatives into the closed-form conditional vector field equation yields:
 
-$$u_t(x | x_1) = \frac{-1}{1 - t} \Big( x - t x_1 \Big) + x_1$$
-
-Since $x = (1 - t)x_0 + t x_1$, $x$ can be subsituted in the equation:
-
-$$u_t(x | x_1) = \frac{-1}{1 - t} \Big( (1 - t)x_0 \Big) + x_1 = x_1 - x_0$$
+$$u_t(x | x_1) = \frac{-1}{1 - t} \Big( x - t x_1 \Big) + x_1 = x_1 - x_0$$
 
 ## Project Architecture
 
 * `configs/`: Configuration files for hyperparameters and model settings.
+* `artefacts/`: Saved artefacts from notebooks.
 * `scripts/`: Executable entry points for training, sampling, and evaluation.
 * `notebooks/`: Notebooks for studying.
 * `src/`: Main source code package.
