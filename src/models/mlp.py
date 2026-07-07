@@ -10,7 +10,15 @@ from src.models.layers import SinusoidalTimeEmbedding
 class FlowMatchingMLP(nn.Module):
     def __init__(self, input_channels=1, image_size=28, time_emb_dim=256, hidden_dim=1024, hidden_layers=3):
         """
-        A robust MLP adapted for MNIST images
+        A robust MLP adapted for images, like MNIST. 
+
+        The image is first flattened and projected to a vector of size 'hidden_dim'. Then, it is added to the
+        embedded time signal, that has also been projected to a vector of the same size. An MLP takes this
+        combined vector as input, and returns a vector of size 'self.image_dim' (same shape as the initial
+        flattened image). Finally, this output vector is reshaped into a (1, H, W) image.
+
+        Args:
+            -
         """
         super().__init__()
         self.image_dim = input_channels * image_size * image_size
@@ -57,6 +65,6 @@ class FlowMatchingMLP(nn.Module):
         
         v_pred_flat = self.output_mlp(hidden)
         
-        v_pred = v_pred_flat.view(batch_size, 1, x.shape[2], x.shape[3])
+        v_pred = v_pred_flat.view(batch_size, x.shape[1], x.shape[2], x.shape[3])
         
         return v_pred
