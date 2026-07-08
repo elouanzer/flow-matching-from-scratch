@@ -5,6 +5,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 import argparse
+import yaml
 import torch
 import torch.nn.functional as F
 from torch.optim import Adam
@@ -12,14 +13,15 @@ from tqdm import tqdm
 
 from src.data.dataset import get_mnist_dataloader
 from src.models.mlp import FlowMatchingMLP
+from src.models.unet import MnistUNet
 from src.flow.matching import OptimalTransportFlowMatcher
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train OT-CFM on MNIST")
-    parser.add_argument("--epochs", type=int, default=10, help="Number of training epochs")
+    parser.add_argument("--epochs", type=int, default=100, help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=128, help="Batch size")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
-    parser.add_argument("--hidden_layers", type=int, default=5, help="Number of hidden layers in MLP")
+    parser.add_argument("--model_type", type=str, default=5, help="Model type: mlp or unet.")
     parser.add_argument("--save_dir", type=str, default="./checkpoints", help="Directory to save the model")
     parser.add_argument("--debug_overfit", action="store_true", help="Test the pipeline by overfitting a single batch")
     return parser.parse_args()
@@ -27,17 +29,32 @@ def parse_args():
 def main():
     args = parse_args()
 
+    if args.model_type not in ["mlp", "unet"]:
+        raise ValueError(f"Provided model_type {args.model_type} not in ['mlp', 'unet'].")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Starting training on device: {device}")
 
     os.makedirs(args.save_dir, exist_ok=True)
+
+    # data
     dataloader = get_mnist_dataloader(batch_size=args.batch_size, is_train=True)
     if args.debug_overfit: # sanity check
         print("DEBUG MODE: Overfitting on a single batch...")
         single_batch = next(iter(dataloader))
         dataloader = [single_batch]
+
+    # model 
+    with open(f"configs/{args.model_type}.yaml") as stream:
+        model_config = yaml.safe_load(stream)
     
-    model = FlowMatchingMLP(hidden_layers=args.hidden_layers).to(device)
+    if args.model_type == "mlp":
+        model = FlowMatchingMLP(**model_config).to(device)
+    elif args.model_type == "unet":
+        model = MnistUNet(**model_config).to(device)
+        # should be comprehensive bc of the test at the beginning of main
+
+    
     optimizer = Adam(model.parameters(), lr=args.lr)
     flow_matcher = OptimalTransportFlowMatcher()
 
