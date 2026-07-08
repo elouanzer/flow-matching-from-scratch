@@ -18,7 +18,11 @@ class FlowMatchingMLP(nn.Module):
         flattened image). Finally, this output vector is reshaped into a (1, H, W) image.
 
         Args:
-            -
+            input_channels: input channels.
+            image_size: size of the image.
+            time_emb_dim: time dimension.
+            hidden_dim: hidden dimension used inside the MLP.
+            hidden_layers: number of hidden layers.
         """
         super().__init__()
         self.image_dim = input_channels * image_size * image_size

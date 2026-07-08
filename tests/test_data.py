@@ -5,7 +5,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 
-from src.data.dataset import get_mnist_dataloader
+from src.dataset import get_mnist_dataloader
 
 def test_mnist_dataloader():
     batch_size = 32

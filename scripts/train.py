@@ -11,10 +11,10 @@ import torch.nn.functional as F
 from torch.optim import Adam
 from tqdm import tqdm
 
-from src.data.dataset import get_mnist_dataloader
+from src.dataset import get_mnist_dataloader
 from src.models.mlp import FlowMatchingMLP
 from src.models.unet import MnistUNet
-from src.flow.matching import OptimalTransportFlowMatcher
+from src.matching import OptimalTransportFlowMatcher
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Train OT-CFM on MNIST")

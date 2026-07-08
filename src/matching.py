@@ -8,11 +8,14 @@ class OptimalTransportFlowMatcher:
         Args:
             sigma_min: minimum variance.
         """
+        # not used so far: TODO
         self.sigma_min = sigma_min
 
     def sample_location_and_target(self, x0, x1):
         """
-        Generates the intermediate point x_t and the target velocity v_t.
+        Generates the intermediate point x_t and the target velocity v_t, by using the following formulas:
+            - x_t = (1 - t) * x_0 + t * x_1
+            - v_t = x_1 - x_0
         
         Args:
             x0: noise tensor (Batch, ...), ex: N(0, I)

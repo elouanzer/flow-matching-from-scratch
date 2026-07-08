@@ -5,7 +5,7 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 import torch
-from src.flow.matching import OptimalTransportFlowMatcher
+from src.matching import OptimalTransportFlowMatcher
 
 def test_ot_flow_matching_shapes_2d():
     matcher = OptimalTransportFlowMatcher()
