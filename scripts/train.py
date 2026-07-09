@@ -14,6 +14,7 @@ from tqdm import tqdm
 from src.dataset import get_mnist_dataloader
 from src.models.mlp import FlowMatchingMLP
 from src.models.unet import MnistUNet
+from src.models.dit import MnistDiT
 from src.matching import OptimalTransportFlowMatcher
 
 def parse_args():
@@ -21,7 +22,7 @@ def parse_args():
     parser.add_argument("--epochs", type=int, default=100, help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=128, help="Batch size")
     parser.add_argument("--lr", type=float, default=1e-4, help="Learning rate")
-    parser.add_argument("--model_type", type=str, default=5, help="Model type: mlp or unet.")
+    parser.add_argument("--model_type", type=str, default=5, help="Model type: mlp, dit or unet.")
     parser.add_argument("--save_dir", type=str, default="./checkpoints", help="Directory to save the model")
     parser.add_argument("--debug_overfit", action="store_true", help="Test the pipeline by overfitting a single batch")
     return parser.parse_args()
@@ -29,7 +30,7 @@ def parse_args():
 def main():
     args = parse_args()
 
-    if args.model_type not in ["mlp", "unet"]:
+    if args.model_type not in ["mlp", "unet", "dit"]:
         raise ValueError(f"Provided model_type {args.model_type} not in ['mlp', 'unet'].")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
@@ -52,6 +53,8 @@ def main():
         model = FlowMatchingMLP(**model_config).to(device)
     elif args.model_type == "unet":
         model = MnistUNet(**model_config).to(device)
+    elif args.model_type == "dit":
+        model = MnistDiT(**model_config).to(device)
         # should be comprehensive bc of the test at the beginning of main
 
     

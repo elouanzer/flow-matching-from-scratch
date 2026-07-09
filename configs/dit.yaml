@@ -1,0 +1,5 @@
+in_channels: 1
+patch_size: 4
+hidden_size: 256
+depth: 4
+num_heads: 4
