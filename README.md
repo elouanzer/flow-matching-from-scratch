@@ -50,15 +50,34 @@ I also wanted to add that, even if the mathematical theory is formulated for vec
 
 ## Project Architecture
 
-* `configs/`: Configuration files for hyperparameters and model settings.
 * `artefacts/`: Saved artefacts from notebooks.
-* `scripts/`: Executable entry points for training, sampling, and evaluation.
+* `configs/`: Configuration files.
 * `notebooks/`: Notebooks for studying.
+* `scripts/`: Executable entry points for training, evaluation and demo.
 * `src/`: Main source code package.
-  * `data/`: Handles all data-related modules, dataset loading (MNIST), and preprocessing.
-  * `models/`: Contains the neural network architectures, forward passes, and custom layers (e.g., Time Embeddings).
-  * `flow/`: Manages the core algorithmic logic for Flow Matching, including interpolation paths and target vector computation.
-* `tests/`: Unit tests verifying mathematical correctness, tensor broadcasting, and module integrity.
+* `tests/`: Unit tests.
+
+## Key Takeaways
+
+Here is a summary of what I have learned during this project:
+- Discovered and dived into Flow Matching theory for generative models, studying Optimal Transport.
+- Implemented U-Net and DiT models, which helped me reinforce my theoretical knowledge of these architectures.
+- Understood the FID metric for rigourous evaluating models generating images.
+- Improved my skills in PyTorch by implementing state-of-the-art architectures, tackling models training (gradient exploding) and hardware limitations on MPS.
+
+Next steps could be:
+- Explore other way to define $u_t(x | x_1)$.
+- Explore other architectures.
+- Test on other dataset (CIFAR, ...).
+
+## Demo
+
+You can launch a demo to see the results with the 3 models (MLP, U-Net, DiT) trained in the 3 notebooks:
+
+```bash
+pytest scripts\demo.py
+```
+![Demo](assets/demo.png)
 
 ## Tests
 
@@ -74,15 +93,12 @@ pytest tests\
 @article{lipman2023flow,
   title={Flow Matching for Generative Modeling},
   author={Lipman, Yaron and Chen, Ricky T. Q. and Ben-Hamu, Heli and Nicklas, Maximilian and Le, Matt Le and Le, Matt and Grover, Aditya},
-  booktitle={International Conference on Learning Representations (ICLR)},
   year={2023},
-  url={[https://arxiv.org/abs/2210.02747](https://arxiv.org/abs/2210.02747)}
+  url={https://arxiv.org/abs/2210.02747}
 }
 @article{tong2023improving,
   title={Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport},
   author={Tong, Alexander and Malkin, Nikolay and Huguet, Guillaume and Zhang, Yanrui and Rector-Brooks, Jarrid and Fatras, Kilian and Wolf, Guy and Bengio, Yoshua},
-  journal={Transactions on Machine Learning Research},
-  issn={2835-8856},
   year={2023},
   url={https://arxiv.org/abs/2302.00482}
 }
