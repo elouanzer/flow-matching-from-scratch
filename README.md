@@ -75,7 +75,7 @@ Next steps could be:
 You can launch a demo to see the results with the 3 models (MLP, U-Net, DiT) trained in the 3 notebooks:
 
 ```bash
-pytest scripts/demo.py
+python scripts/demo.py
 ```
 ![Demo](assets/demo.png)
 
