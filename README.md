@@ -69,6 +69,7 @@ Next steps could be:
 - Explore other way to define $u_t(x | x_1)$.
 - Explore other architectures.
 - Test on other dataset (CIFAR, ...).
+- Include a user prompt to "control" the generation.
 
 ## Demo
 
