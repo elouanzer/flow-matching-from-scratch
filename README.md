@@ -79,6 +79,10 @@ python scripts/demo.py
 ```
 ![Demo](assets/demo.png)
 
+You can even see the generation path in the demo!
+
+![DemoGif](assets/generation_path.gif)
+
 ## Tests
 
 Basic unit tests can be launched with pytest:

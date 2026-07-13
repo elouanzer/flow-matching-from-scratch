@@ -5,7 +5,6 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 import torch
-import torchvision
 import gradio as gr
 import numpy as np
 import yaml
@@ -57,6 +56,42 @@ def run_euler(model, x_init, num_steps):
             
     return x
 
+def run_euler_trajectory(model, x_init, num_steps):
+    x = x_init.clone()
+    dt = 1.0 / num_steps
+    trajectory = [process_to_pil(x)]
+    
+    with torch.no_grad():
+        for step in range(num_steps):
+            t_val = step * dt
+            t_tensor = torch.full((x.shape[0],), t_val, device=device)
+            v_pred = model(x, t_tensor)
+            if v_pred.dim() == 2:
+                v_pred = v_pred.view_as(x)
+            x = x + v_pred * dt
+            trajectory.append(process_to_pil(x))
+            
+    return trajectory
+
+def generate_trajectory(model_choice, num_steps):
+    if model_choice == "MLP":
+        model = model_mlp
+    elif model_choice == "U-Net":
+        model = model_unet
+    else:
+        model = model_dit
+        
+    x0 = torch.randn(1, 1, 28, 28).to(device)
+    traj_list = run_euler_trajectory(model, x0, num_steps)
+    
+    return traj_list, gr.update(maximum=num_steps, value=0), traj_list[0]
+
+def update_step_image(step_index, traj_list):
+    """Met à jour l'image affichée quand on bouge le curseur."""
+    if not traj_list or step_index >= len(traj_list):
+        return None
+    return traj_list[step_index]
+
 def process_to_pil(x_tensor):
     x_tensor = (x_tensor + 1.0) / 2.0
     x_tensor = x_tensor.clamp(0, 1)
@@ -100,6 +135,34 @@ with gr.Blocks(title="Comparaison Flow Matching") as demo:
         fn=generate_comparison,
         inputs=[steps_slider],
         outputs=[img_mlp, img_unet, img_dit]
+    )
+
+    gr.Markdown("---")  
+    gr.Markdown("## Let's see the generation step by step")
+    gr.Markdown("Select a model, compute the generation and then use the time cursor to actually see the generation process, from pure noise to generated image!")
+
+    with gr.Row():
+        with gr.Column():
+            model_dropdown = gr.Dropdown(choices=["MLP", "U-Net", "DiT"], value="DiT", label="Model")
+            traj_steps_slider = gr.Slider(minimum=2, maximum=100, value=20, step=1, label="Euler steps.")
+            calc_traj_btn = gr.Button("Compute generation.", variant="secondary")
+            step_scrubber = gr.Slider(minimum=0, maximum=20, value=0, step=1, label="Time t (use once generation is complete)", interactive=True)
+            
+        with gr.Column():
+            traj_image = gr.Image(label="Image at time t", elem_classes="large-image")
+            
+    trajectory_state = gr.State([])
+
+    calc_traj_btn.click(
+        fn=generate_trajectory,
+        inputs=[model_dropdown, traj_steps_slider],
+        outputs=[trajectory_state, step_scrubber, traj_image]
+    )
+    
+    step_scrubber.change(
+        fn=update_step_image,
+        inputs=[step_scrubber, trajectory_state],
+        outputs=traj_image
     )
 
 if __name__ == "__main__":
