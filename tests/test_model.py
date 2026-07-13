@@ -7,6 +7,7 @@ if project_root not in sys.path:
 import torch
 from src.models.mlp import FlowMatchingMLP
 from src.models.unet import UnetBlock, MnistUNet
+from src.models.dit import DiTBlock, MnistDiT
 from src.models.layers import SinusoidalTimeEmbedding
 
 # ====================================
@@ -36,13 +37,8 @@ def test_mnist_time_mlp_default():
     assert v_pred.shape == x.shape
 
 # ====================================
-# Unet
+# UNet
 # ====================================
-
-import torch
-
-# Assure-toi d'importer tes classes depuis ton module
-# from src.models.unet import Block, MnistUNet 
 
 def test_block_down():
     batch_size = 4
@@ -87,4 +83,31 @@ def test_mnist_unet_default():
     
     v_pred = model(x, t)
     
+    assert v_pred.shape == x.shape, f"Expected {x.shape}, got {v_pred.shape}"
+
+# ====================================
+# DiT
+# ====================================
+
+def test_dit_block():
+    batch_size = 4
+    seq_len = 49
+    hidden_size = 128
+    num_heads = 4
+
+    block = DiTBlock(hidden_size, num_heads)
+    
+    x = torch.randn(batch_size, seq_len, hidden_size)
+    t_emb = torch.randn(batch_size, hidden_size)
+    
+    out = block(x, t_emb)
+    
+    assert out.shape == (batch_size, seq_len, hidden_size), f"Shape mismatch: {out.shape}"
+
+def test_mnist_dit_default():
+    batch_size = 8
+    model = MnistDiT(in_channels=1, patch_size=4, hidden_size=128, depth=2, num_heads=4)
+    x = torch.randn(batch_size, 1, 28, 28)
+    t = torch.rand(batch_size)
+    v_pred = model(x, t)
     assert v_pred.shape == x.shape, f"Expected {x.shape}, got {v_pred.shape}"
